@@ -1,1 +1,1 @@
-![Profile](screenshots/home.png)
+![Home](screenshots/home.png)

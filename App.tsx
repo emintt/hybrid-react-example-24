@@ -1,16 +1,17 @@
 import {StatusBar} from 'expo-status-bar';
 import {Platform, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Home from './src/views/Home';
 import Navigator from './src/navigators/Navigator';
 
 const App = () => {
   console.log('moro');
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider>
       {/* wrap the app inside NavigationContainer */}
       <Navigator />
       <StatusBar style="auto" />
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

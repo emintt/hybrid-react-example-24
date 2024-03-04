@@ -2,8 +2,9 @@ import {Button, Card} from '@rneui/base';
 import {Input} from '@rneui/themed';
 import {Controller, useForm} from 'react-hook-form';
 import {useUser} from '../hooks/apiHooks';
+import { Alert } from 'react-native';
 
-const RegisterForm = () => {
+const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
   const {postUser, getUsernameAvailable, getEmailAvailable} = useUser();
   const initValues = {
     username: '',
@@ -21,14 +22,20 @@ const RegisterForm = () => {
     mode: 'onBlur',
   });
 
-  const doRegister = async (inputs:  {
+  const doRegister = async (inputs: {
     username: string;
     password: string;
     confirmPassword?: string;
     email: string;
   }) => {
-    delete inputs.confirmPassword;
-    await postUser(inputs);
+    try {
+      delete inputs.confirmPassword;
+      await postUser(inputs);
+      Alert.alert('User created', 'You can now login');
+      handleToggle();
+    } catch (error) {
+      console.log('Error', (error as Error).message);
+    }
   };
 
   return (

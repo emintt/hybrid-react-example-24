@@ -1,6 +1,2 @@
-Home
-![Home](screenshots/2-navigation-a.png)
-Profile
-![Profile](screenshots/2-navigation-b.png)
-Video
-![SingleMedia](screenshots/2-navigation-b.png)
+Lab A:
+![SingleMedia](screenshots3-comp-lib-single.png)

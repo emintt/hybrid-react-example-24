@@ -4,6 +4,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from '../views/Home';
 import Profile from '../views/Profile';
 import Single from '../views/Single';
+import {useUserContext} from '../hooks/contextHooks';
+import Login from '../views/Login';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -18,10 +20,22 @@ const TabNavigator = () => {
 };
 
 const StackNavigator = () => {
+  const {user} = useUserContext();
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Tabs" component={TabNavigator} />
-      <Stack.Screen name="Single Media" component={Single} />
+      {/* show login screen instead of other tabs when user is not logged in */}
+      {user ? (
+        <>
+          <Stack.Screen
+            name="Tabs"
+            component={TabNavigator}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Single Media" component={Single} />
+        </>
+      ) : (
+        <Stack.Screen name="Login" component={Login} />
+      )}
     </Stack.Navigator>
   );
 };

@@ -16,12 +16,15 @@ import {
   UploadResponse,
   UserResponse,
 } from '../types/MessageTypes';
+import useUpdateContext from './updateHooks';
 
 // const useMedia = (): MediaItemWithOwner[] => {  -> type comes automatically
 const useMedia = () => {
   // palauta mediaArray, missä on media tietoa + kukin itemin username
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
   // console.log(mediaArray);
+  const {update} = useUpdateContext();
+
   const getMedia = async () => {
     try {
       const MediaIems = await fetchData<MediaItem[]>(
@@ -40,6 +43,7 @@ const useMedia = () => {
           return itemWithOwner;
         }),
       );
+      itemsWithOwner.reverse();
       setMediaArray(itemsWithOwner);
 
       console.log('mediaArray', itemsWithOwner);
@@ -51,7 +55,7 @@ const useMedia = () => {
   // useEffect nay ko phu thuoc vao mediaArray (ko pass mediaArray vao no), no chi cahy 1 lan khi component dc tai. Khi media dc
   useEffect(() => {
     getMedia();
-  }, []);
+  }, [update]);
 
   const postMedia = async (
     file: UploadResponse,
@@ -90,8 +94,26 @@ const useMedia = () => {
     );
   };
 
+  const putMedia = async (
+    inputs: Record<string, string>,
+    token: string,
+    media_id: number,
+  ) => {
+    await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_MEDIA_API + '/media/' + media_id,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(inputs),
+      },
+    );
+  };
+
   // palauta valmis objekttina
-  return {mediaArray, postMedia};
+  return {mediaArray, postMedia, putMedia};
 };
 
 const useUser = () => {

@@ -1,7 +1,7 @@
 import {Controller, useForm} from 'react-hook-form';
 import {Button, Card, Input} from '@rneui/base';
 import * as ImagePicker from 'expo-image-picker';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {TouchableOpacity, Keyboard, ScrollView, Alert} from 'react-native';
 import {Video} from 'expo-av';
 import {
@@ -11,6 +11,7 @@ import {
 } from '@react-navigation/native';
 import {useFile, useMedia} from '../hooks/apiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useUpdateContext} from '../hooks/UpdateHook';
 
 const Upload = () => {
   const [image, setImage] = useState<ImagePicker.ImagePickerResult | null>(
@@ -18,6 +19,7 @@ const Upload = () => {
   );
   const {postExpoFile} = useFile();
   const {postMedia} = useMedia();
+  const {update, setUpdate} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const initValues = {title: '', description: ''};
@@ -25,9 +27,15 @@ const Upload = () => {
     control,
     handleSubmit,
     formState: {errors},
+    reset,
   } = useForm({
     defaultValues: initValues,
   });
+
+  const resetForm = () => {
+    reset();
+    setImage(null);
+  };
 
   const doUpload = async (inputs: {title: string; description: string}) => {
     console.log('inputs', inputs);
@@ -41,8 +49,10 @@ const Upload = () => {
       if (token) {
         const fileResponse = await postExpoFile(image.assets![0].uri, token);
         const mediaResponse = await postMedia(fileResponse, inputs, token);
+        setUpdate(!update);
         Alert.alert(mediaResponse.message);
         navigation.navigate('Home');
+        resetForm();
       }
     } catch (error) {
       Alert.alert('Error', (error as Error).message);
@@ -64,6 +74,13 @@ const Upload = () => {
       setImage(result);
     }
   };
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      resetForm();
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <ScrollView>
@@ -127,6 +144,8 @@ const Upload = () => {
       <Button title="Choose media" onPress={pickImage} />
       <Card.Divider />
       <Button title="Upload" onPress={handleSubmit(doUpload)} />
+      <Card.Divider />
+      <Button title="Reset" onPress={resetForm} />
     </ScrollView>
   );
 };

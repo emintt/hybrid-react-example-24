@@ -2,6 +2,8 @@ import {Controller, useForm} from 'react-hook-form';
 import {Button, Card, Input} from '@rneui/base';
 import * as ImagePicker from 'expo-image-picker';
 import {useState} from 'react';
+import {TouchableOpacity, Keyboard, ScrollView} from 'react-native';
+import {Video} from 'expo-av';
 import {useFile, useMedia} from '../hooks/apiHooks';
 
 const Upload = () => {
@@ -42,15 +44,24 @@ const Upload = () => {
   };
 
   return (
-    <Card>
-      <Card.Image
-        onPress={pickImage}
-        source={{
-          uri: image
-            ? image.assets![0].uri
-            : 'https://via.placeholder.com/150?text=Choose+media',
-        }}
-      />
+    <ScrollView>
+      {image && image.assets![0].mimeType?.includes('video') ? (
+        <Video
+          source={{uri: image.assets![0].uri}}
+          style={{height: 300}}
+          useNativeControls
+        />
+      ) : (
+        <Card.Image
+          onPress={pickImage}
+          style={{aspectRatio: 1, height: 300}}
+          source={{
+            uri: image
+              ? image.assets![0].uri
+              : 'https://via.placeholder.com/150?text=Choose+media',
+          }}
+        />
+      )}
       <Controller
         control={control}
         rules={{
@@ -90,8 +101,10 @@ const Upload = () => {
         )}
         name="description"
       />
+      <Button title="Choose media" onPress={pickImage} />
+      <Card.Divider />
       <Button title="Upload" onPress={handleSubmit(doUpload)} />
-    </Card>
+    </ScrollView>
   );
 };
 

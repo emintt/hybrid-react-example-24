@@ -33,7 +33,7 @@ const Upload = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.6,
     });
 
     console.log(result);
@@ -62,6 +62,7 @@ const Upload = () => {
           }}
         />
       )}
+      <Card.Divider />
       <Controller
         control={control}
         rules={{

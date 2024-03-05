@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import * as FileSystem from 'expo-file-system';
 import {fetchData} from '../lib/functions';
 import {
   Comment,
@@ -192,8 +193,28 @@ const useFile = () => {
       options,
     );
   };
+  const postExpoFile = async (
+    imageUri: string,
+    token: string,
+  ): Promise<UploadResponse> => {
+    // TODO: display loading indicator
+    const fileResult = await FileSystem.uploadAsync(
+      process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/upload',
+      imageUri,
+      {
+        httpMethod: 'POST',
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'file',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+    // TODO: hide loading indicator
+    return JSON.parse(fileResult.body);
+  };
 
-  return {postFile};
+  return {postFile, postExpoFile};
 };
 
 const useLike = () => {

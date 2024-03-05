@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
 import {Button} from '@rneui/base';
+import {Keyboard, TouchableOpacity} from 'react-native';
 import LoginForm from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
 import {useUserContext} from '../hooks/contextHooks';
-import { Keyboard, TouchableOpacity } from 'react-native';
 
 const Login = () => {
   const [toggleRegister, setToggleRegister] = useState(false);

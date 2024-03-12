@@ -9,9 +9,9 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {useFile, useMedia} from '../hooks/apiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useUpdateContext} from '../hooks/UpdateHook';
+import {useFile, useMedia} from '../hooks/apiHooks';
+import useUpdateContext from '../hooks/updateHooks';
 
 const Upload = () => {
   const [image, setImage] = useState<ImagePicker.ImagePickerResult | null>(
